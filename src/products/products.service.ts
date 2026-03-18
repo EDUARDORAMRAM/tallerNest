@@ -29,16 +29,16 @@ export class ProductsService {
   }
   ]
   create(createProductDto: CreateProductDto) {
-    const savedProduct = this.ProductRepository.save(createProductDto);
-    return savedProduct;
+     const product = this.ProductRepository.create(createProductDto);
+        return this.ProductRepository.save(product);
   }
 
   findAll() {
     return this.ProductRepository.find();
   }
 
-  findOne(id: string) {
-    const productFound=this.ProductRepository.findOneBy({
+  async findOne(id: string) {
+    const productFound= await this.ProductRepository.findOneBy({
       productId:id,
     });
     if (!productFound) throw new NotFoundException(`Product #${id} not found`);
@@ -46,11 +46,13 @@ export class ProductsService {
   }
 
 
-  findByProvider(id: string) {
-    const productsFound = this.products.filter((product)=>product.provider === id)
-    if (!productsFound) throw new NotFoundException(`Provider #${id} not found`);
-    return productsFound;
-  }
+  async findByProvider(providerId: string) {
+        // Buscar en BD por columna provider, no en array en memoria
+        const products = await this.ProductRepository.findBy({ provider: providerId });
+        if (!products.length)
+            throw new NotFoundException(`No products found for provider #${providerId}`);
+        return products;
+    }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     const product = await this.ProductRepository.preload({
@@ -62,13 +64,13 @@ export class ProductsService {
    return product;
   }
 
-  remove(id: string) {
-    this.findOne(id)
-    this.ProductRepository.delete({
+  async remove(id: string) {
+    await this.findOne(id)
+    await this.ProductRepository.delete({
       productId : id,
     })
     return {
-      message: `Product #${id} had been deleted`
+      message: `Product #${id} has been deleted`
     }
   }
 }
