@@ -1,19 +1,25 @@
-import { IsIn, IsInt, IsNumber, IsOptional, IsString, IsUUID, MaxLength } from "class-validator";
+import { IsInt, IsNumber, IsOptional, IsString, IsUUID, MaxLength } from "class-validator";
+import { Product } from "../entities/product.entity";
 
-export class CreateProductDto {
+export class CreateProductDto extends Product {
     @IsString()
-    @IsUUID()
+    @IsUUID("4")
     @IsOptional()
-    productId:string;
+    declare productId: string;
+
     @IsString()
     @MaxLength(40)
-    productName:string;
+    declare productName: string;
+
     @IsNumber()
-    price:number;
+    declare price: number;
+
     @IsInt()
-    countSeal: number;
+    declare countSeal: number;
+
     @IsString()
     @IsUUID()
-     @IsOptional()
-    provider: string;
+    // Cambiamos el tipo a string porque desde el frontend/Postman 
+    // enviarás el UUID del proveedor, no el objeto completo.
+    declare provider: any; 
 }

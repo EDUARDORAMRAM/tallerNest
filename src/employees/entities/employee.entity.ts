@@ -15,5 +15,10 @@ export class Employee {
 
     @Column({ type: "text" })
     celphone: string;
+    @Column({
+        type: "text",
+        nullable: true
+    })
+    photoUrl: string;
 
 }

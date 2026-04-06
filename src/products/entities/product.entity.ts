@@ -1,14 +1,24 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Provider } from "src/providers/entities/provider.entity";
+
 @Entity()
 export class Product {
-    @PrimaryGeneratedColumn("uuid")
+
+    @PrimaryGeneratedColumn('uuid')
     productId: string;
-    @Column({type:"text"})
+
+    @Column('text')
     productName: string;
-    @Column({type:"float"})
+
+    @Column('float')
     price: number;
-    @Column({type:"int"})
+
+    @Column('int')
     countSeal: number;
-    @Column({type:"uuid",nullable: true})
-    provider: string;
+
+    // Relación: Muchos productos pertenecen a un solo proveedor
+    @ManyToOne(() => Provider, (provider) => provider.products,{
+        eager:true,
+    })
+    provider: Provider;
 }

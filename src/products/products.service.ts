@@ -12,29 +12,13 @@ export class ProductsService {
     private ProductRepository: Repository<Product>)
     {
   }
-  private products: CreateProductDto[] = [{
-
-    productId: uuid(),
-    productName: "Sabritas",
-    price: 10,
-    countSeal: 4,
-    provider:uuid()  
-  }, 
-  {
-    productId: uuid(),
-    productName: "CocaCola",
-    price: 20,
-    countSeal: 10,
-    provider:uuid() 
-  }
-  ]
+  
   create(createProductDto: CreateProductDto) {
-     const product = this.ProductRepository.create(createProductDto);
-        return this.ProductRepository.save(product);
+        return this.ProductRepository.save(createProductDto);
   }
 
   findAll() {
-    return this.ProductRepository.find();
+    return this.ProductRepository.find(); 
   }
 
   async findOne(id: string) {
@@ -46,13 +30,13 @@ export class ProductsService {
   }
 
 
-  async findByProvider(providerId: string) {
-        // Buscar en BD por columna provider, no en array en memoria
-        const products = await this.ProductRepository.findBy({ provider: providerId });
-        if (!products.length)
-            throw new NotFoundException(`No products found for provider #${providerId}`);
-        return products;
-    }
+  findByProvider(id: string) {
+    return this.ProductRepository.findBy({
+      provider: {
+        providerId: id,
+      },
+    });
+  }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     const product = await this.ProductRepository.preload({
