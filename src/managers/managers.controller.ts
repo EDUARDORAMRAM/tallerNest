@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { ManagersService } from './managers.service';
 import { CreateManagerDto } from './dto/create-manager.dto';
 import { UpdateManagerDto } from './dto/update-manager.dto';
@@ -18,17 +18,23 @@ export class ManagersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.managersService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    // ⚠️ CORRECCIÓN: Le quitamos el '+'
+    return this.managersService.findOne(id); 
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateManagerDto: UpdateManagerDto) {
-    return this.managersService.update(+id, updateManagerDto);
+  update(
+    @Param('id', ParseUUIDPipe) id: string, 
+    @Body() updateManagerDto: UpdateManagerDto
+  ) {
+    // ⚠️ CORRECCIÓN: Le quitamos el '+'
+    return this.managersService.update(id, updateManagerDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.managersService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    // ⚠️ CORRECCIÓN: Le quitamos el '+'
+    return this.managersService.remove(id);
   }
 }
